@@ -8,12 +8,13 @@ MY_IP = get_if_addr(conf.iface)
 MAX_HISTORY = 5
 
 
-def dos_detector(interface):
+def dos_detector(interface) -> list[str]:
+    attackers: list[str] = []
     packets = deque(maxlen=MAX_HISTORY)  # Fixed-size queue for efficient packet handling
     threshold = 3
 
     def packet_handler(packet):
-        nonlocal packets, threshold
+        nonlocal attackers, packets, threshold
         if IP not in packet:
             # print(f"Skipped {packet}")
             return
@@ -30,9 +31,11 @@ def dos_detector(interface):
         packet_count = sum(1 for ts, ip in packets if ip == src_ip and ts >
                            time.time() - 30)
         if packet_count > threshold:
+            attackers.append(src_ip)
             print(f"Potential DoS attack from {src_ip}")
 
     sniff(iface=interface, prn=packet_handler)
+    return attackers
 
 
 def main():
