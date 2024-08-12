@@ -15,8 +15,7 @@ def get_ip_from_user() -> str:
 
     return ip
 
-
-def main():
+def commit_DDOS() -> None:
     ip: str = get_ip_from_user()
 
     print("Beginning attack, press CTRL+C at any moment to stop.")
@@ -30,6 +29,8 @@ def main():
     except BaseException:
         print("An exception occurred, abandoning attack.")
 
+def main():
+    commit_DDOS()
 
 if __name__ == '__main__':
     main()
