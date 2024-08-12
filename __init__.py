@@ -1,5 +1,5 @@
 import DDOS
-import AntiDoS
+
 
 def main():
   DDOS.commit_DoS()
