@@ -14,10 +14,10 @@ def block_ip_in_firewall(ip: str) -> None:
     # for Windows OS
     def block_ip_in_firewall_windows(ip: str) -> None:
         command = ['netsh', 'advfirewall', 'firewall', 'add', 'rule',
-                   f'name=BlockIP_{ip}',
+                   f'name="BlockIP_{ip}"',
                    f'dir=in',
                    f'action=block',
-                   f'remoteip={ip}']
+                   f'remoteip="{ip}"']
         subprocess.run(command, check=True)
 
     # for Linux OS
