@@ -55,7 +55,7 @@ def detect_DoS(interface: Interceptor = conf.iface) -> list[str]:
         packet_count = sum(1 for ts, ip in packets if ip == src_ip and ts >
                            time.time() - 30)
         if src_ip not in attackers and packet_count > threshold:
-            attackers.add(src_ip)
+            attackers.append(src_ip)
             print(f"Potential DoS attack from {src_ip}")
 
     sniff(iface=interface, prn=packet_handler, timeout=30)
