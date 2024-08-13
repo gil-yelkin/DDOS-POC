@@ -1,19 +1,20 @@
 from scapy.all import sniff, get_if_addr, conf
 from scapy.layers.inet import IP
+from scapy.config import Interceptor
 from collections import deque
 import time
 import subprocess
 import sys
 
-MY_IP = get_if_addr(conf.iface)
-MAX_HISTORY = 5
+MY_IP: str = get_if_addr(conf.iface)
+MAX_HISTORY: int = 256
 
 
 def block_ip_in_firewall(ip: str) -> None:
     # for Windows OS
     def block_ip_in_firewall_windows(ip: str) -> None:
         command = ['netsh', 'advfirewall', 'firewall', 'add', 'rule',
-                   f'name=BlockDoSIP_{ip}',
+                   f'name=BlockIP_{ip}',
                    f'dir=in',
                    f'action=block',
                    f'remoteip={ip}']
@@ -32,10 +33,10 @@ def block_ip_in_firewall(ip: str) -> None:
         raise NotImplementedError
 
 
-def dos_detector(interface) -> list[str]:
+def detect_DoS(interface: Interceptor = conf.iface) -> list[str]:
     attackers: list[str] = []
     packets = deque(maxlen=MAX_HISTORY)  # Fixed-size queue for efficient packet handling
-    threshold = 3
+    threshold: int = 3
 
     def packet_handler(packet):
         nonlocal attackers, packets, threshold
@@ -64,7 +65,7 @@ def dos_detector(interface) -> list[str]:
 def main():
     print(f"Started sniffing on host {MY_IP}...\n")
     try:
-        dos_detector(conf.iface)
+        detect_DoS(conf.iface)
     except KeyboardInterrupt:
         print("\nSniffing stopped.")
 

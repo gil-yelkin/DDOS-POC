@@ -10,7 +10,7 @@ IP_REGEX_MATCHER = re.compile(IP_REGEX_PATTERN_STRING)
 ### Helper Functions ###
 ########################
 def get_ip_from_user() -> str:
-    ip = input("Enter an ip address to DOS: \n"
+    ip = input("Enter an ip address to DoS: \n"
                "> ")
 
     while not IP_REGEX_MATCHER.match(ip) is not None:
