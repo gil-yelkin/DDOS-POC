@@ -2,26 +2,27 @@ from scapy.all import sniff, get_if_addr, conf
 from scapy.layers.inet import IP
 from collections import deque
 import time
-from sys import stdout
+import sys
 import subprocess
 
 MY_IP = get_if_addr(conf.iface)
 MAX_HISTORY = 5
 
+
 def block_ip_in_firewall(ip: str) -> None:
     # for Windows OS
     def block_ip_in_firewall_windows(ip: str) -> None:
-        command = [ 'netsh', 'advfirewall', 'firewall', 'add', 'rule',
-                    f'name=BlockDoSIP_{ip_address}',
-                    f'dir=in',
-                    f'action=block',
-                    f'remoteip={ip_address}' ]
+        command = ['netsh', 'advfirewall', 'firewall', 'add', 'rule',
+                   f'name=BlockDoSIP_{ip}',
+                   f'dir=in',
+                   f'action=block',
+                   f'remoteip={ip}']
         subprocess.run(command, check=True)
-        
+
     # for Linux OS
     def block_ip_in_firewall_linux(ip: str) -> None:
         raise NotImplementedError
-        
+
     if sys.platform.startswith('linux'):
         block_ip_in_firewall_linux(ip)
     elif sys.platform == "win32":
@@ -29,6 +30,7 @@ def block_ip_in_firewall(ip: str) -> None:
     else:
         print(f'the "{sys.platform}" OS is not yet supported.')
         raise NotImplementedError
+
 
 def dos_detector(interface) -> list[str]:
     attackers: list[str] = []
