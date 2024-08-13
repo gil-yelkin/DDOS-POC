@@ -17,7 +17,7 @@ def block_ip_in_firewall(ip: str) -> None:
                    f'name="BlockIP_{ip}"',
                    f'dir=in',
                    f'action=block',
-                   f'remoteip="{ip}"']
+                   f'localip="{ip}"']
         subprocess.run(command, check=True)
 
     # for Linux OS
