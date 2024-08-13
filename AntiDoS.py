@@ -2,8 +2,8 @@ from scapy.all import sniff, get_if_addr, conf
 from scapy.layers.inet import IP
 from collections import deque
 import time
-import sys
 import subprocess
+import sys
 
 MY_IP = get_if_addr(conf.iface)
 MAX_HISTORY = 5
@@ -47,9 +47,8 @@ def dos_detector(interface) -> list[str]:
         if src_ip == MY_IP:
             return
 
-        print(packet)
+        # print(packet)
         packets.append((time.time(), src_ip))
-        print(packets)
 
         # Count packets from the same source in the last n seconds
         packet_count = sum(1 for ts, ip in packets if ip == src_ip and ts >
