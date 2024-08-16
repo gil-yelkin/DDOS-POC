@@ -1,28 +1,7 @@
 import pythonping
-import scapy
-import re
-
-IP_REGEX_PATTERN_STRING = r'^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
-IP_REGEX_MATCHER = re.compile(IP_REGEX_PATTERN_STRING)
+from Helper import get_ip_from_user
 
 
-# #######################
-# ## Helper Functions ###
-# #######################
-def get_ip_from_user() -> str:
-    ip = input("Enter an ip address to DoS: \n"
-               "> ")
-
-    while not IP_REGEX_MATCHER.match(ip) is not None:
-        ip = input("Invalid IP address, please try again: \n"
-                   "> ")
-
-    return ip
-
-
-# #######################
-# ### DoS  Functions ####
-# #######################
 def commit_DoS(ip: str = None) -> None:
     if ip is None:
         ip = get_ip_from_user()
