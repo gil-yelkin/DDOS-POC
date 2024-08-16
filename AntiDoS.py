@@ -10,18 +10,28 @@ MY_IP: str = get_if_addr(conf.iface)
 MAX_HISTORY: int = 256
 
 
+def is_local(ip: str) -> bool:
+    return ip.split('.')[0:1] == [10.100] or ip.split('.')[0:1] == [192.168]
+
+
+def get_ip_type(ip: str) -> str:
+    return "local" if is_local(ip) else "remote"
+
+
 def block_ip_in_firewall(ip: str) -> None:
     # for Windows OS
-    def block_ip_in_firewall_windows(ip: str) -> None:
+    def block_ip_in_firewall_windows() -> None:
+        nonlocal ip
         command = ['netsh', 'advfirewall', 'firewall', 'add', 'rule',
                    f'name="BlockIP_{ip}"',
                    f'dir=in',
                    f'action=block',
-                   f'localip="{ip}"']
+                   f'{get_ip_type(ip)}ip="{ip}"']
         subprocess.run(command, check=True)
 
     # for Linux OS
-    def block_ip_in_firewall_linux(ip: str) -> None:
+    def block_ip_in_firewall_linux() -> None:
+        nonlocal ip
         raise NotImplementedError
 
     if sys.platform.startswith('linux'):
