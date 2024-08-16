@@ -5,17 +5,10 @@ from collections import deque
 import time
 import subprocess
 import sys
+from Helper import get_ip_type
 
 MY_IP: str = get_if_addr(conf.iface)
 MAX_HISTORY: int = 256
-
-
-def is_local(ip: str) -> bool:
-    return ip.split('.')[0:1] == [10.100] or ip.split('.')[0:1] == [192.168]
-
-
-def get_ip_type(ip: str) -> str:
-    return "local" if is_local(ip) else "remote"
 
 
 def block_ip_in_firewall(ip: str) -> None:
