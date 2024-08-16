@@ -6,9 +6,9 @@ IP_REGEX_PATTERN_STRING = r'^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[
 IP_REGEX_MATCHER = re.compile(IP_REGEX_PATTERN_STRING)
 
 
-########################
-### Helper Functions ###
-########################
+# #######################
+# ## Helper Functions ###
+# #######################
 def get_ip_from_user() -> str:
     ip = input("Enter an ip address to DoS: \n"
                "> ")
@@ -20,13 +20,13 @@ def get_ip_from_user() -> str:
     return ip
 
 
-########################
-#### DoS  Functions ####
-########################
+# #######################
+# ### DoS  Functions ####
+# #######################
 def commit_DoS(ip: str = None) -> None:
     if ip is None:
         ip = get_ip_from_user()
-        
+
     print("Beginning attack, press CTRL+C at any moment to stop.")
     try:
         while True:
@@ -42,6 +42,6 @@ def commit_DoS(ip: str = None) -> None:
 def main():
     pass
 
+
 if __name__ == '__main__':
     main()
-
