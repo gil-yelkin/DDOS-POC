@@ -16,10 +16,10 @@ def block_ip_in_firewall(ip: str) -> None:
     def block_ip_in_firewall_windows() -> None:
         nonlocal ip
         command = ['netsh', 'advfirewall', 'firewall', 'add', 'rule',
-                   f'name="BlockIP_{ip}"',
+                   f'name=BlockIP_{ip}',
                    'dir=in',
                    'action=block',
-                   f'{get_ip_type(ip)}ip="{ip}"']
+                   f'{get_ip_type(ip)}ip={ip}']
         subprocess.run(command, check=True)
 
     # for Linux OS
