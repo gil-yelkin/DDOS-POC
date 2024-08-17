@@ -12,7 +12,7 @@ def detect_DoS_wrapper() -> NoReturn:
     for ip in attackers:
         if input(f'Do you wish to block {ip} in your firewall?') == '0':
             AntiDoS.block_ip_in_firewall(ip)
-            print()
+            print(f'{ip} Blocked successfully')
 
 
 commands: dict[Callable] = {0: exit_program,
