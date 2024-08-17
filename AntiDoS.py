@@ -28,9 +28,9 @@ def block_ip_in_firewall(ip: str) -> None:
         raise NotImplementedError
 
     if sys.platform.startswith('linux'):
-        block_ip_in_firewall_linux(ip)
+        block_ip_in_firewall_linux()
     elif sys.platform == "win32":
-        block_ip_in_firewall_windows(ip)
+        block_ip_in_firewall_windows()
     else:
         print(f'the "{sys.platform}" OS is not yet supported.')
         raise NotImplementedError
