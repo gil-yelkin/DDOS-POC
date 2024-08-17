@@ -30,3 +30,7 @@ def get_ip_from_user() -> str:
 def exit_program() -> None:
     print('Goodbye!')
     exit(0)
+
+
+def on_exception(e: BaseException) -> None:
+    print(f'An error occurred:\n{e}\n')

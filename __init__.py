@@ -1,12 +1,21 @@
 import DDOS
 import AntiDoS
 from typing import Callable, NoReturn
-from Helper import exit_program
+from Helper import exit_program, on_exception
+from scapy.config import conf
 
 
 def detect_DoS_wrapper() -> NoReturn:
-    print('Scanning incoming traffic for malicious activity...')
-    attackers: list[str] = AntiDoS.detect_DoS()
+    while True:
+        try:
+            attackers: list[str] = AntiDoS.detect_DoS(conf.ifaces.dev_from_index(input('Please choose an interface to scan:\n'
+                                                                                       f'{conf.ifaces}\n'
+                                                                                       "(Enter the interface's index)\n"
+                                                                                       '> ')))
+        except ValueError as e:
+            print('Invalid interface index, please try again.\n')
+        else:
+            break
     num_attackers = len(attackers)
     print(f'{num_attackers} threats found{", all good :)" if num_attackers == 0 else (": " + str(attackers))}')
     for ip in attackers:
@@ -36,8 +45,8 @@ def main():
         try:
             commands[choice]()
         except OSError as e:
-            print(f'An error occurred:\n{e}')
-            print('Insufficient permissions, try running this program again in administrator mode.')
+            on_exception(e)
+            print('Insufficient permissions, please update Npcap.')
 
 
 if __name__ == "__main__":
