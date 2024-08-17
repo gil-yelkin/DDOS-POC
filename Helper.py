@@ -25,3 +25,8 @@ def get_ip_from_user() -> str:
                    "> ")
 
     return ip
+
+
+def exit_program() -> None:
+    print('Goodbye!')
+    exit(0)
