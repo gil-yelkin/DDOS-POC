@@ -39,7 +39,7 @@ def block_ip_in_firewall(ip: str) -> None:
 def detect_DoS(interface: Interceptor = conf.iface) -> list[str]:
     attackers: list[str] = list()
     packets = deque(maxlen=MAX_HISTORY)  # Fixed-size queue for efficient packet handling
-    threshold: int = 3
+    threshold: int = 100
 
     def packet_handler(packet):
         nonlocal attackers, packets, threshold
@@ -61,7 +61,7 @@ def detect_DoS(interface: Interceptor = conf.iface) -> list[str]:
             attackers.append(src_ip)
             print(f"Potential DoS attack from {src_ip}")
 
-    sniff(iface=interface, prn=packet_handler, timeout=30)
+    sniff(iface=interface, prn=packet_handler, timeout=30, promisc=False)
     return attackers
 
 
