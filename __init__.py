@@ -3,6 +3,7 @@ import AntiDoS
 from typing import Callable, NoReturn
 from Helper import exit_program, on_exception
 from scapy.config import conf
+from subprocess import CalledProcessError
 
 
 def detect_DoS_wrapper() -> NoReturn:
@@ -19,7 +20,8 @@ def detect_DoS_wrapper() -> NoReturn:
     num_attackers = len(attackers)
     print(f'{num_attackers} threats found{", all good :)" if num_attackers == 0 else (": " + str(attackers))}')
     for ip in attackers:
-        if input(f'Do you wish to block {ip} in your firewall?') == '0':
+        if input(f'Do you wish to block {ip} in your firewall? (Y/N)\n'
+                 '> ').upper() == 'Y':
             AntiDoS.block_ip_in_firewall(ip)
             print(f'{ip} Blocked successfully')
 
@@ -46,7 +48,10 @@ def main():
             commands[choice]()
         except OSError as e:
             on_exception(e)
-            print('Insufficient permissions, please update Npcap.')
+            print('Incompatible Npcap version, please update Npcap.')
+        except CalledProcessError as e:
+            on_exception(e)
+            print('Insufficient permissions, rerun program as administrator.')
 
 
 if __name__ == "__main__":
