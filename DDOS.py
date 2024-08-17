@@ -19,7 +19,7 @@ def commit_DoS(ip: str = None) -> None:
 
 
 def main():
-    pass
+    commit_DoS()
 
 
 if __name__ == '__main__':
