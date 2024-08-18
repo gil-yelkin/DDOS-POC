@@ -1,4 +1,6 @@
 import re
+from scapy.config import conf
+from scapy.config import Interceptor
 
 IP_REGEX_PATTERN_STRING: str = r'^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' \
                                r'(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' \
@@ -25,6 +27,14 @@ def get_ip_from_user() -> str:
                    "> ")
 
     return ip
+
+
+def get_interface_from_user() -> Interceptor:
+    network_interface = input('Please choose an interface to scan:\n'
+                              f'{conf.ifaces}\n'
+                              "(Enter the interface's index)\n"
+                              '> ')
+    return conf.ifaces.dev_from_index(network_interface)
 
 
 def exit_program() -> None:

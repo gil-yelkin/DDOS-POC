@@ -1,7 +1,8 @@
 import subprocess
 import re
 from scapy.config import Interceptor
-from scapy.all import conf
+from scapy.all import sniff, conf
+from scapy.layers.l2 import ARP
 
 
 class ARPTableEntry:
@@ -16,7 +17,22 @@ class ARPTableEntry:
         return f"IP: {self.ip:<15} | MAC: {self.mac} | Type: {self.type:<7} | Interface: {self.interface}"
 
 
-def detect_ARP_spoofing() -> None:
+def detect_ARP_spoofing(interface: Interceptor) -> None:
+    table: list[ARPTableEntry] = get_ARP_table()
+
+    def packet_handler(packet):
+        content = packet[ARP].summary()
+        if packet.op == 1:  # Request
+            request = content.split('/')[0]
+            print(request)
+            ips_match = re.compile(r"^.* (\d+\.\d+\.\d+\.\d+).* (\d+\.\d+\.\d+\.\d+)\s*$").match(request)
+            print(f'Sender: {ips_match.group(2)} | Requested: {ips_match.group(1)}\n')
+        elif packet.op == 2:  # Response
+            print(content)
+            results = re.compile(r"^.* (([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}).* (\d+\.\d+\.\d+\.\d+)\s*$").match(content)
+            print(f'Result: {results.group(1)} | Responder: {results.group(3)}\n')  # 2nd group is trash
+
+    sniff(iface=interface, prn=packet_handler, timeout=120, promisc=True, store=False, filter='arp')
     pass
 
 
@@ -39,7 +55,3 @@ def get_ARP_table() -> list[ARPTableEntry] | None:
     except subprocess.CalledProcessError as e:
         print(f"Failed to retrieve ARP table. Error: {e}")
         return None
-
-
-for i in get_ARP_table():
-    print(i)
