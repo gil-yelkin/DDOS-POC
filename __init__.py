@@ -1,19 +1,16 @@
 import DDOS
 import AntiDoS
+import AntiARPSpoofing
 from typing import Callable, NoReturn
-from Helper import exit_program, on_exception
-from scapy.config import conf
+from Helper import exit_program, on_exception, get_interface_from_user
 from subprocess import CalledProcessError
 
 
 def detect_DoS_wrapper() -> NoReturn:
     while True:
         try:
-            attackers: list[str] = AntiDoS.detect_DoS(conf.ifaces.dev_from_index(input('Please choose an interface to scan:\n'
-                                                                                       f'{conf.ifaces}\n'
-                                                                                       "(Enter the interface's index)\n"
-                                                                                       '> ')))
-        except ValueError as e:
+            attackers: list[str] = AntiDoS.detect_DoS(get_interface_from_user())
+        except ValueError:
             print('Invalid interface index, please try again.\n')
         else:
             break
@@ -26,9 +23,20 @@ def detect_DoS_wrapper() -> NoReturn:
             print(f'{ip} Blocked successfully')
 
 
+def detect_ARP_wrapper() -> NoReturn:
+    while True:
+        try:
+            AntiARPSpoofing.detect_ARP_spoofing(get_interface_from_user())
+        except ValueError:
+            print('Invalid interface index, please try again.\n')
+        else:
+            break
+
+
 commands: dict[Callable] = {0: exit_program,
                             1: DDOS.commit_DoS,
-                            2: detect_DoS_wrapper}
+                            2: detect_DoS_wrapper,
+                            3: detect_ARP_wrapper,}
 
 
 def main():
@@ -37,7 +45,8 @@ def main():
         print('What do you wish to do?\n'
               '0: Exit program\n'
               '1: Commit DoS\n'
-              '2: Detect potential (D)DoS attacks on your computer')
+              '2: Detect potential (D)DoS attacks on your computer\n'
+              '3: Detect potential ARP Spoofing attacks on your network')
 
         while choice not in commands.keys():
             try:
