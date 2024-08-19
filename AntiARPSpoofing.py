@@ -2,17 +2,18 @@ from __future__ import annotations
 
 import subprocess
 import re
+from dataclasses import dataclass
 from scapy.config import Interceptor
 from scapy.all import sniff, conf
 from scapy.layers.l2 import ARP
 
 
+@dataclass(slots=True)
 class ARPTableEntry:
-    def __init__(self, ip_address: str, mac_address: str, entry_type: str, interface: Interceptor = conf.iface):
-        self.ip: str = ip_address
-        self.mac: str = mac_address
-        self.type: str = entry_type
-        self.interface: Interceptor = interface
+    ip: str
+    mac: str
+    type: str
+    interface: Interceptor
 
     def __str__(self) -> str:
         # Nice padding for organized printing
