@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import subprocess
 import re
 from scapy.config import Interceptor
@@ -40,14 +42,14 @@ def get_ARP_table() -> list[ARPTableEntry] | None:
     try:
         table: list[ARPTableEntry] = []
         output = subprocess.run(['arp', '-a'], capture_output=True, text=True, check=True).stdout
-
-        # Take the last value in interface row, which is the interface ID in hexa
-        interface = conf.ifaces.dev_from_index(int(output.splitlines()[1].split(' ')[-1], 16))  # Convert from hexa to decimal
-
-        for line in output.splitlines()[3:]:  # Skip the first 3 lines
+        for line in output.splitlines():
+            interface: Interceptor
+            if line.startswith('Interface:'):
+                # Take the last value in interface row, which is the interface ID in hex
+                interface = conf.ifaces.dev_from_index(int(line.split(' ')[-1], 16))  # Convert from hex to decimal
             arp_entry_match = re.compile(r'^\s*(\d+\.\d+\.\d+\.\d+)\s+([0-9a-fA-F\-]+)\s+(\w+)\s*$').match(line)
             if arp_entry_match:
-                #                   Internet Address (IP)    Physical Address (MAC)    Type (static/dynamic)
+                #                     Internet Address (IP)     Physical Address (MAC)    Type (static/dynamic)
                 entry = ARPTableEntry(arp_entry_match.group(1), arp_entry_match.group(2), arp_entry_match.group(3), interface)
                 table.append(entry)
         return table
@@ -55,3 +57,12 @@ def get_ARP_table() -> list[ARPTableEntry] | None:
     except subprocess.CalledProcessError as e:
         print(f"Failed to retrieve ARP table. Error: {e}")
         return None
+
+
+def main():
+    for entry in get_ARP_table():
+        print(entry)
+
+
+if __name__ == '__main__':
+    main()
