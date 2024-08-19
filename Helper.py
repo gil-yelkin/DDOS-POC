@@ -32,11 +32,15 @@ def get_ip_from_user() -> str:
 def get_interface_from_user() -> Interceptor:
     while True:
         try:
-            network_interface = input('Please choose an interface to scan:\n'
-                                      f'{conf.ifaces}\n'
-                                      "(Enter the interface's index)\n"
-                                      '> ')
-            return conf.ifaces.dev_from_index(network_interface)
+            interface_index = input('Please choose an interface to scan:\n'
+                                    f'{conf.ifaces}\n'
+                                    "(Enter the interface's index, or -1 for the default interface)\n"
+                                    '> ')
+            if interface_index == '-1':
+                i: Interceptor = conf.iface
+                print(f'the default interface was chosen: {i.name}')
+                return conf.iface
+            return conf.ifaces.dev_from_index(interface_index)
         except ValueError:
             print('Invalid interface index, please try again.\n')
 
