@@ -43,6 +43,9 @@ def main():
                 choice = int(input('> '))
             except ValueError:
                 print('Unavailable command, please try again.')
+            except KeyboardInterrupt:
+                print('0\nOK, bye for now :(')
+                return
         try:
             commands[choice]()
         except OSError as e:
