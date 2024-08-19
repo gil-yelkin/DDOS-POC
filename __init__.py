@@ -7,13 +7,7 @@ from subprocess import CalledProcessError
 
 
 def detect_DoS_wrapper() -> NoReturn:
-    while True:
-        try:
-            attackers: list[str] = AntiDoS.detect_DoS(get_interface_from_user())
-        except ValueError:
-            print('Invalid interface index, please try again.\n')
-        else:
-            break
+    attackers: list[str] = AntiDoS.detect_DoS(get_interface_from_user())
     num_attackers = len(attackers)
     print(f'{num_attackers} threats found{", all good :)" if num_attackers == 0 else (": " + str(attackers))}')
     for ip in attackers:
@@ -21,22 +15,18 @@ def detect_DoS_wrapper() -> NoReturn:
                  '> ').upper() == 'Y':
             AntiDoS.block_ip_in_firewall(ip)
             print(f'{ip} Blocked successfully')
+        else:
+            print('Threat overlooked.')
 
 
 def detect_ARP_wrapper() -> NoReturn:
-    while True:
-        try:
-            AntiARPSpoofing.detect_ARP_spoofing(get_interface_from_user())
-        except ValueError:
-            print('Invalid interface index, please try again.\n')
-        else:
-            break
+    AntiARPSpoofing.detect_ARP_spoofing(get_interface_from_user())
 
 
 commands: dict[Callable] = {0: exit_program,
                             1: DDOS.commit_DoS,
                             2: detect_DoS_wrapper,
-                            3: detect_ARP_wrapper,}
+                            3: detect_ARP_wrapper}
 
 
 def main():
