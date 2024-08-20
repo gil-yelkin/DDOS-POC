@@ -5,9 +5,7 @@ from typing import Callable, NoReturn
 from Helper import exit_program, on_exception, get_interface_from_user
 from subprocess import CalledProcessError
 
-
-def detect_DoS_wrapper() -> NoReturn:
-    attackers: list[str] = AntiDoS.detect_DoS(get_interface_from_user())
+def block_attackers(attackers: list[str]) -> None:
     num_attackers = len(attackers)
     print(f'{num_attackers} threats found{", all good :)" if num_attackers == 0 else (": " + str(attackers))}')
     for ip in attackers:
@@ -19,8 +17,12 @@ def detect_DoS_wrapper() -> NoReturn:
             print('Threat overlooked.')
 
 
+def detect_DoS_wrapper() -> NoReturn:
+    block_attackers(AntiDoS.detect_DoS(get_interface_from_user()))
+
+
 def detect_ARP_wrapper() -> NoReturn:
-    AntiARPSpoofing.detect_ARP_spoofing(get_interface_from_user())
+    block_attackers(AntiARPSpoofing.detect_ARP_spoofing(get_interface_from_user()))
 
 
 commands: dict[Callable] = {0: exit_program,
@@ -35,8 +37,8 @@ def main():
         print('What do you wish to do?\n'
               '0: Exit program\n'
               '1: Commit DoS\n'
-              '2: Detect potential (D)DoS attacks on your computer\n'
-              '3: Detect potential ARP Spoofing attacks on your network')
+              '2: Detect potential (D)DoS attacks on your computer (30s)\n'
+              '3: Detect potential ARP Spoofing attacks on your network (2m)')
 
         while choice not in commands.keys():
             try:
