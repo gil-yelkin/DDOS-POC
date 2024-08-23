@@ -83,7 +83,10 @@ def detect_ARP_spoofing(interface: Interceptor) -> list[str]:
             results = re.compile(r"^.* (([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}).* (\d+\.\d+\.\d+\.\d+)\s*$").match(content)
             # Discard 2nd group because of regex syntax
             response = ARPResponse(results.group(3), results.group(1))
-            request = requests.pop(requests.index(packet.pdst))  # find dest
+            try:
+                request = requests.pop(requests.index(packet.pdst))  # find dest
+            except:
+                pass
             print(f"{response} | {request}")
             # Need to validate in that response.response_mac is
             # same as the MAC of request.requested_ip in my table

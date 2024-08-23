@@ -2,10 +2,15 @@ import DDOS
 import AntiDoS
 import AntiARPSpoofing
 from typing import Callable, NoReturn
-from Helper import exit_program, on_exception, get_interface_from_user
+from Helper import exit_program, on_exception, get_interface_from_user, make_admin, is_admin
 from subprocess import CalledProcessError
 
+
 def block_attackers(attackers: list[str]) -> None:
+    if not is_admin():
+        print('Attackers cannot be blocked since the process is not elevated.\n'
+              'Rerun the process as administrator to enable attacker-blockage.\n')
+        return
     num_attackers = len(attackers)
     print(f'{num_attackers} threats found{", all good :)" if num_attackers == 0 else (": " + str(attackers))}')
     for ip in attackers:
@@ -32,6 +37,8 @@ commands: dict[Callable] = {0: exit_program,
 
 
 def main():
+    make_admin()
+
     while True:
         choice: int = -1
         print('What do you wish to do?\n'
