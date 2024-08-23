@@ -1,6 +1,9 @@
+import ctypes
 import re
-from scapy.config import conf
+import sys
+
 from scapy.config import Interceptor
+from scapy.config import conf
 
 IP_REGEX_PATTERN_STRING: str = r'^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' \
                                r'(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.' \
@@ -52,3 +55,26 @@ def exit_program() -> None:
 
 def on_exception(e: BaseException) -> None:
     print(f'An error occurred:\n{e}\n')
+
+
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+
+def make_admin():
+    if not is_admin():
+        # Re-run the program with admin privileges
+        # this code also triggers the UAC
+        result = ctypes.windll.shell32.ShellExecuteW(
+            None, "runas", sys.executable, " ".join(sys.argv), None, 1
+        )
+        # If the user clicked 'NO' on the UAC window
+        if result <= 32:
+            print('Proceeding code without admin privileges.\n'
+                  'Note that will not be able to block attackers for you,\n'
+                  'although you will still be able to view detected attackers.\n')
+        else:  # if the user clicked 'yes' on the UAC window
+            exit(0)  # existing because a new and elevated process has been created
