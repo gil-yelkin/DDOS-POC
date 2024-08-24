@@ -67,14 +67,15 @@ def is_admin():
 def make_admin():
     if not is_admin():
         # Re-run the program with admin privileges
-        # this code also triggers the UAC
+        # this code also triggers the UAC window
         result = ctypes.windll.shell32.ShellExecuteW(
             None, "runas", sys.executable, " ".join(sys.argv), None, 1
         )
         # If the user clicked 'NO' on the UAC window
         if result <= 32:
             print('Proceeding code without admin privileges.\n'
-                  'Note that will not be able to block attackers for you,\n'
-                  'although you will still be able to view detected attackers.\n')
+                  'Note that I will not be able to block attackers for you.\n'
+                  'You will still be able to view detected attackers.\n')
         else:  # if the user clicked 'yes' on the UAC window
+            print('A new administrator process has been created, terminating the current process.')
             exit(0)  # existing because a new and elevated process has been created
